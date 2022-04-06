@@ -12,7 +12,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>СОА - 1-ая Лабораторная</title>
+    <title>СОА 2-ая Лабораторная</title>
 </head>
 <style>
     <%@ include file="/WEB-INF/css/main.css" %>

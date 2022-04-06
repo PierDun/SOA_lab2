@@ -19,7 +19,7 @@ public class DragonFilterSpecification implements Specification<Dragon> {
     @Override
     public Predicate toPredicate(Root<Dragon> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
         Join<Dragon, Coordinates> coordinatesJoin =  root.join("coordinates");
-        Join<Dragon, DragonCave> caveJoin =  root.join("cave");
+        Join<Dragon, DragonCave> caveJoin =  root.join("dragon_cave");
         try {
             return criteriaBuilder.and(filterParams.getPredicates(criteriaBuilder, root, coordinatesJoin, caveJoin).toArray(new Predicate[0]));
         } catch (ParseException e) {

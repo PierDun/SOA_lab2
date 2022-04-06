@@ -21,8 +21,6 @@ public class DragonRequestParams {
     public String[] y;
     public String[] creationDate;
     public String[] age;
-    public String[] population;
-    public String[] metersAboveSeaLevel;
     public String[] type;
     public String[] color;
     public String[] depth;
@@ -35,12 +33,10 @@ public class DragonRequestParams {
     private static final String Y_PARAM = "y";
     private static final String AGE_PARAM = "age";
     private static final String CREATION_DATE_PARAM = "creation_date";
-    private static final String POPULATION_PARAM = "population";
-    private static final String METERS_ABOVE_SEA_LEVEL_PARAM = "meters_above_sea_level";
     private static final String COLOR_PARAM = "color";
     private static final String TYPE_PARAM = "type";
     private static final String DEPTH_PARAM = "depth";
-    private static final String SORTING_PARAM = "sort";
+    private static final String SORTING_PARAM = "sortBy";
     private static final String PAGE_INDEX = "page";
     private static final String PAGE_SIZE_PARAM = "size";
 
@@ -49,12 +45,10 @@ public class DragonRequestParams {
         setDragonRequestParams(info.get(NAME_PARAM),
                 info.get(X_PARAM),
                 info.get(Y_PARAM),
-                info.get(AGE_PARAM),
                 info.get(CREATION_DATE_PARAM),
-                info.get(POPULATION_PARAM),
-                info.get(METERS_ABOVE_SEA_LEVEL_PARAM),
-                info.get(COLOR_PARAM),
+                info.get(AGE_PARAM),
                 info.get(TYPE_PARAM),
+                info.get(COLOR_PARAM),
                 info.get(DEPTH_PARAM),
                 info.get(SORTING_PARAM),
                 info.get(PAGE_INDEX),
@@ -66,10 +60,8 @@ public class DragonRequestParams {
                                         String[] x,
                                         String[] y,
                                         String[] creationDate,
-                                        String[] area,
-                                        String[] population,
-                                        String[] metersAboveSeaLevel,
-                                        String[] government,
+                                        String[] age,
+                                        String[] type,
                                         String[] color,
                                         String[] depth,
                                         String[] sort,
@@ -79,10 +71,8 @@ public class DragonRequestParams {
         this.x = x;
         this.y = y;
         this.creationDate = creationDate;
-        this.age = area;
-        this.population = population;
-        this.metersAboveSeaLevel = metersAboveSeaLevel;
-        this.type = government;
+        this.age = age;
+        this.type = type;
         this.color = color;
         this.depth = depth;
         this.sort = sort;
@@ -137,33 +127,11 @@ public class DragonRequestParams {
         if (age != null)
             if (age.length > 1) {
                 if (age[0] != null && !age[0].isEmpty())
-                    predicates.add(cb.ge(joinCoordinates.get("area"), Float.parseFloat(age[0])));
+                    predicates.add(cb.ge(joinCoordinates.get("age"), Long.parseLong(age[0])));
                 if (age[1] != null && !age[1].isEmpty())
-                    predicates.add(cb.le(joinCoordinates.get("area"), Float.parseFloat(age[1])));
+                    predicates.add(cb.le(joinCoordinates.get("age"), Long.parseLong(age[1])));
             } else if (age[0] != null && !age[0].isEmpty())
-                predicates.add(cb.equal(joinCoordinates.get("area"), Float.parseFloat(age[0])));
-
-        if (population != null)
-            if (population.length > 1) {
-                if (population[0] != null && !population[0].isEmpty())
-                    // больше или равен
-                    predicates.add(cb.ge(joinCoordinates.get("population"), Integer.parseInt(population[0])));
-                if (population[1] != null && !population[1].isEmpty())
-                    // меньше или равен
-                    predicates.add(cb.le(joinCoordinates.get("population"), Integer.parseInt(population[1])));
-            } else if (population[0] != null && !population[0].isEmpty())
-                predicates.add(cb.equal(joinCoordinates.get("population"), Integer.parseInt(population[0])));
-
-        if (metersAboveSeaLevel != null)
-            if (metersAboveSeaLevel.length > 1) {
-                if (metersAboveSeaLevel[0] != null && !metersAboveSeaLevel[0].isEmpty())
-                    // больше или равен
-                    predicates.add(cb.ge(joinCoordinates.get("metersAboveSeaLevel"), Integer.parseInt(metersAboveSeaLevel[0])));
-                if (metersAboveSeaLevel[1] != null && !metersAboveSeaLevel[1].isEmpty())
-                    // меньше или равен
-                    predicates.add(cb.le(joinCoordinates.get("metersAboveSeaLevel"), Integer.parseInt(metersAboveSeaLevel[1])));
-            } else if (metersAboveSeaLevel[0] != null && !metersAboveSeaLevel[0].isEmpty())
-                predicates.add(cb.equal(joinCoordinates.get("metersAboveSeaLevel"), Integer.parseInt(metersAboveSeaLevel[0])));
+                predicates.add(cb.equal(joinCoordinates.get("age"), Long.parseLong(age[0])));
 
         if (type != null)
             predicates.add(root.get("type").as(String.class).in(type));
@@ -174,11 +142,11 @@ public class DragonRequestParams {
         if (depth != null)
             if (depth.length > 1) {
                 if (depth[0] != null && !depth[0].isEmpty())
-                    predicates.add(cb.ge(joinCave.get("height"), Double.parseDouble(depth[0])));
+                    predicates.add(cb.ge(joinCave.get("depth"), Double.parseDouble(depth[0])));
                 if (depth[1] != null && !depth[1].isEmpty())
-                    predicates.add(cb.le(joinCave.get("height"), Double.parseDouble(depth[1])));
+                    predicates.add(cb.le(joinCave.get("depth"), Double.parseDouble(depth[1])));
             } else if (depth[0] != null && !depth[0].isEmpty())
-                predicates.add(cb.equal(joinCave.get("height"), Double.parseDouble(depth[0])));
+                predicates.add(cb.equal(joinCave.get("depth"), Double.parseDouble(depth[0])));
 
         return predicates;
     }
@@ -191,13 +159,13 @@ public class DragonRequestParams {
             args[0] = "coordinates." + args[0];
         }
         if (args[0].equals(DEPTH_PARAM)) {
-            args[0] = "governor." + args[0];
+            args[0] = "dragon_cave." + args[0];
         }
         String field = args[0];
         Sort currentSorting = Sort.by(field);
-        if (args[1].equals("asc"))
+        if (args[1].equals("ASC"))
             currentSorting = currentSorting.ascending();
-        else if (args[1].equals("desc"))
+        else if (args[1].equals("DESC"))
             currentSorting = currentSorting.descending();
         else
             throw new ParseException("incorrect sort parameter " + sort[0], 0);

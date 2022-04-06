@@ -24,7 +24,7 @@ function filterListener(form, url, ev) {
     let formData = new FormData(form);
     let request = new XMLHttpRequest();
     request.responseType = "text";
-    let getStr = "?selectedPage=" + document.getElementById("selectedPage").value + "&numberOfRecordsPerPage=" +
+    let getStr = "?page=" + document.getElementById("selectedPage").value + "&size=" +
         document.getElementById("numberOfRecordsPerPage").value+ "&";
     for (let pair of formData.entries()) {
         getStr += pair[0] + '=' + pair[1] + '&';
@@ -49,7 +49,7 @@ function filterListener(form, url, ev) {
         }
     }
 
-    getStr += "&sortBy=" + selectedColumn + "&order=" + selectedOrder;
+    getStr += "&sortBy=" + selectedColumn + "_" + selectedOrder;
     request.open("GET", url + getStr);
 
     request.onload = function (oEvent) {
@@ -95,7 +95,7 @@ getDragonsWithLesserColor.addEventListener('submit',
 
         let getStr = "?selectedPage=" + document.getElementById("selectedPage").value + "&numberOfRecordsPerPage=" +
             document.getElementById("numberOfRecordsPerPage").value+ "&color=" + selectedColor;
-        let url = "/Lab1-1.0-SNAPSHOT/color" + getStr;
+        let url = "/color" + getStr;
 
         let request = new XMLHttpRequest();
         request.responseType = 'text';
